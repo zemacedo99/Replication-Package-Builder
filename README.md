@@ -84,6 +84,7 @@ sudo apt install python3-pip
         ```
 
     3. When done, deactivate with:
+
         ```bash
         deactivate
         ```
