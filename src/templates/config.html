@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Configuration</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Configure API Keys</h1>
+    <form action="/config" method="post">
+        <label>Elsevier API Key: <input type="text" name="elsevier_api" value="{{ current.get('elsevier_api', '') }}"></label><br>
+        <label>Elsevier Inst Token: <input type="text" name="elsevier_inst" value="{{ current.get('elsevier_inst', '') }}"></label><br>
+        <label>IEEE API Key: <input type="text" name="ieee_api" value="{{ current.get('ieee_api', '') }}"></label><br>
+        <label>Springer API Key: <input type="text" name="springer_api" value="{{ current.get('springer_api', '') }}"></label><br>
+        <button type="submit">Save Configuration</button>
+    </form>
+    <br>
+    <a href="/dashboard" style="text-decoration: none;"><button>Back to Dashboard</button></a>
+</body>
+</html>

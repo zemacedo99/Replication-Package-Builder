@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>{{ content }}</h1>
+    <img src="/static/atlas_research_logo.png" alt="Image">
+    <p>Welcome to the Replication Package Builder.</p>
+    <a href="/config" style="text-decoration: none;"><button>Configure API Keys</button></a>
+    <p>Select the data sources you want to use:</p>
+    <form action="/run" method="post" onsubmit="showLoading()">
+        <label><input type="checkbox" name="scopus" {% if not available_sources['scopus'] %}disabled{% endif %} onchange="checkSources()"> Scopus {% if not available_sources['scopus'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="ieee" {% if not available_sources['ieee'] %}disabled{% endif %} onchange="checkSources()"> IEEE Xplore {% if not available_sources['ieee'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="engineering_village" {% if not available_sources['engineering_village'] %}disabled{% endif %} onchange="checkSources()"> Engineering Village {% if not available_sources['engineering_village'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="science_direct" {% if not available_sources['science_direct'] %}disabled{% endif %} onchange="checkSources()"> Science Direct {% if not available_sources['science_direct'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="hal_open_science" {% if not available_sources['hal_open_science'] %}disabled{% endif %} onchange="checkSources()"> HAL Open Science {% if not available_sources['hal_open_science'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="acm_digital_library" {% if not available_sources['acm_digital_library'] %}disabled{% endif %} onchange="checkSources()"> ACM Digital Library {% if not available_sources['acm_digital_library'] %}(API Key Required){% endif %}</label>
+        <label><input type="checkbox" name="springer_nature" {% if not available_sources['springer_nature'] %}disabled{% endif %} onchange="checkSources()"> Springer Nature {% if not available_sources['springer_nature'] %}(API Key Required){% endif %}</label>
+        <br><br>
+        <p>Add custom categories and terms (comma-separated for terms):</p>
+        <div id="custom-categories">
+            <div class="category-item">
+                <label>Category 1: <input name="custom_category1" placeholder="e.g., Agile Keywords"></label><br>
+                <label>Terms 1: <textarea name="custom_terms1" placeholder="e.g., Agile, Scrum, Kanban"></textarea></label>
+                <button type="button" onclick="removeCategory(this)">Remove</button>
+            </div>
+        </div>
+        <button type="button" onclick="addCategory()">Add Category</button>
+        <br><br>
+        <p>Or import terms from a CSV file (format: Category,Term):</p>
+        <input type="file" id="csvFile" accept=".csv">
+        <button type="button" onclick="importCSV()">Import CSV</button>
+        <br><br>
+        <button type="submit" id="runButton" disabled>Start Replication Package Build</button>
+    </form>
+    <div id="loading-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; text-align:center; padding-top:20%; color:#00ff00; font-family:'Courier New', monospace;">
+        <p>Running replication queries...<br>Please wait, this may take several minutes.</p>
+        <div class="spinner"></div>
+    </div>
+    {% if items %}
+    <ul>
+        {% for item in items %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+</body>
+<script>
+    let categoryCounter = 1;
+
+    function addCategory() {
+        categoryCounter++;
+        const container = document.getElementById('custom-categories');
+        const div = document.createElement('div');
+        div.className = 'category-item';
+        div.innerHTML = `
+            <label>Category ${categoryCounter}: <input name="custom_category${categoryCounter}" placeholder="e.g., Agile Keywords"></label><br>
+            <label>Terms ${categoryCounter}: <textarea name="custom_terms${categoryCounter}" placeholder="e.g., Agile, Scrum, Kanban"></textarea></label>
+            <button type="button" onclick="removeCategory(this)">Remove</button>
+        `;
+        container.appendChild(div);
+    }
+
+    function removeCategory(button) {
+        button.parentElement.remove();
+    }
+
+    function showLoading() {
+        document.getElementById('loading-overlay').style.display = 'block';
+    }
+
+    function checkSources() {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name]');
+        const button = document.getElementById('runButton');
+        const checked = Array.from(checkboxes).some(cb => cb.checked);
+        button.disabled = !checked;
+    }
+
+    // Initial check
+    checkSources();
+
+    function importCSV() {
+        const file = document.getElementById('csvFile').files[0];
+        if (!file) {
+            alert('Please select a CSV file first.');
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result;
+            const lines = text.split('\n');
+            const categories = {};
+            for (let i = 1; i < lines.length; i++) {  // skip header
+                const parts = lines[i].split(',');
+                if (parts.length >= 2) {
+                    const cat = parts[0].trim();
+                    const term = parts[1].trim();
+                    if (cat && term) {
+                        if (!categories[cat]) categories[cat] = [];
+                        categories[cat].push(term);
+                    }
+                }
+            }
+            // Add categories
+            Object.keys(categories).forEach(cat => {
+                addCategory();
+                const items = document.querySelectorAll('.category-item');
+                const last = items[items.length - 1];
+                last.querySelector('input[name^="custom_category"]').value = cat;
+                last.querySelector('textarea[name^="custom_terms"]').value = categories[cat].join(', ');
+            });
+        };
+        reader.readAsText(file);
+    }
+</script>
+</html>

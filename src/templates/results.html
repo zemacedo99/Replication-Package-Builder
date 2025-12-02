@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>{{ title }}</h1>
+    <p>{{ message }}</p>
+    <h2>Query Used</h2>
+    <p>{{ query or "No custom query applied" }}</p>
+    <a href="/export_query" download style="text-decoration: none;"><button>Export Query</button></a>
+    <button onclick="scrollToBottom()">Go to Bottom</button>
+    <a href="/dashboard" style="text-decoration: none;"><button>Back to Dashboard</button></a>
+    {% for source, items in results.items() %}
+    <div class="source">
+        <h2>{{ source.replace('_', ' ').title() }}</h2>
+        <p class="count">Retrieved {{ items|length }} items</p>
+        {% if items %}
+        <ul>
+            {% for item in items %}
+            <li>
+                <strong>{% if item.get('Link') %}<a href="{{ item.get('Link') }}" target="_blank" style="color: #00ff00; text-decoration: none;">{% endif %}{{ item.get('Title', 'No title') }}{% if item.get('Link') %}</a>{% endif %}</strong><br>
+                Authors: {{ item.get('Authors', 'Unknown') }}<br>
+                Publication Year: {{ item.get('Publication Year', 'N/A') }}<br>
+                Venue: {{ item.get('Venue', 'N/A') }}
+                {% if item.get('Link') %}
+                <br><a href="{{ item.get('Link') }}" style="color: #00ff00;" target="_blank">Link</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No items retrieved.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+    <h2>Venue Wordcloud</h2>
+    <img src="/generated_images/venue_wordcloud.png?{{ timestamp }}" alt="Venue Wordcloud" style="max-width: 100%; height: auto;">
+    <h2>Data Analysis Charts</h2>
+    <h3>Publication Year Distribution</h3>
+    <img src="/generated_images/publication_year_distribution.png?{{ timestamp }}" alt="Publication Year Distribution" style="max-width: 100%; height: auto;">
+    <h3>Top 10 Publication Venue Distribution</h3>
+    <img src="/generated_images/publication_venue_distribution.png?{{ timestamp }}" alt="Publication Venue Distribution" style="max-width: 100%; height: auto;">
+    <h3>Publication Venue Type Distribution</h3>
+    <img src="/generated_images/publication_venue_type_distribution.png?{{ timestamp }}" alt="Publication Venue Type Distribution" style="max-width: 100%; height: auto;">
+    <h3>Publication Source Distribution</h3>
+    <img src="/generated_images/publication_source_distribution.png?{{ timestamp }}" alt="Publication Source Distribution" style="max-width: 100%; height: auto;">
+    <h3>Top 35 Publication Authors Distribution</h3>
+    <img src="/generated_images/publication_authors_distribution.png?{{ timestamp }}" alt="Publication Authors Distribution" style="max-width: 100%; height: auto;">
+    <h2>Available Data Files</h2>
+    <p>Download the processed results:</p>
+    <ul>
+        <li><a href="/data_results/all_results.csv" style="color: #00ff00;" target="_blank">All Results (CSV)</a></li>
+        <li><a href="/data_results/unique_results.csv" style="color: #00ff00;" target="_blank">Unique Results (CSV)</a></li>
+        <li><a href="/data_results/non_english.csv" style="color: #00ff00;" target="_blank">Non-English Results (CSV)</a></li>
+        <li><a href="/data_results/repeated.csv" style="color: #00ff00;" target="_blank">Repeated Results (CSV)</a></li>
+        <!-- Add more as needed -->
+    </ul>
+    <br>
+    <a href="/download_images" style="text-decoration: none;"><button>Download All Charts</button></a>
+    <br>
+    <button onclick="scrollToTop()">Go to Top</button>
+    <a href="/dashboard" style="text-decoration: none;"><button>Back to Dashboard</button></a>
+</body>
+<script>
+    function scrollToBottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function scrollToTop() {
+        window.scrollTo(0, 0);
+    }
+</script>
+</html>
