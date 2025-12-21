@@ -7,15 +7,60 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Configure API Keys</h1>
-    <form action="/config" method="post">
-        <label>Elsevier API Key: <input type="text" name="elsevier_api" value="{{ current.get('elsevier_api', '') }}"></label><br>
-        <label>Elsevier Inst Token: <input type="text" name="elsevier_inst" value="{{ current.get('elsevier_inst', '') }}"></label><br>
-        <label>IEEE API Key: <input type="text" name="ieee_api" value="{{ current.get('ieee_api', '') }}"></label><br>
-        <label>Springer API Key: <input type="text" name="springer_api" value="{{ current.get('springer_api', '') }}"></label><br>
-        <button type="submit">Save Configuration</button>
-    </form>
-    <br>
-    <a href="/dashboard" style="text-decoration: none;"><button>Back to Dashboard</button></a>
+    <div class="container">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="terminal-btn close"></span>
+                    <span class="terminal-btn minimize"></span>
+                    <span class="terminal-btn maximize"></span>
+                </div>
+                <div class="terminal-title">API_CONFIG.SYS</div>
+            </div>
+            <div class="terminal-body">
+                <h1>⚙ Configure API Keys ⚙</h1>
+                
+                <p class="text-amber">[ SYSTEM ] Enter your API credentials below to unlock additional data sources.</p>
+                
+                <form action="/config" method="post">
+                    <div class="category-item">
+                        <h3>▸ Elsevier APIs</h3>
+                        <p class="text-cyan">Required for: Scopus, Engineering Village, Science Direct</p>
+                        
+                        <label>Elsevier API Key:
+                            <input type="text" name="elsevier_api" value="{{ current.get('elsevier_api', '') }}" placeholder="Enter Elsevier API Key...">
+                        </label>
+                        
+                        <label>Elsevier Institution Token:
+                            <input type="text" name="elsevier_inst" value="{{ current.get('elsevier_inst', '') }}" placeholder="Enter Institution Token...">
+                        </label>
+                    </div>
+                    
+                    <div class="category-item">
+                        <h3>▸ IEEE API</h3>
+                        <p class="text-cyan">Required for: IEEE Xplore</p>
+                        
+                        <label>IEEE API Key:
+                            <input type="text" name="ieee_api" value="{{ current.get('ieee_api', '') }}" placeholder="Enter IEEE API Key...">
+                        </label>
+                    </div>
+                    
+                    <div class="category-item">
+                        <h3>▸ Springer API</h3>
+                        <p class="text-cyan">Required for: Springer Nature</p>
+                        
+                        <label>Springer API Key:
+                            <input type="text" name="springer_api" value="{{ current.get('springer_api', '') }}" placeholder="Enter Springer API Key...">
+                        </label>
+                    </div>
+                    
+                    <div class="nav-buttons mt-20">
+                        <button type="submit" class="primary">💾 SAVE CONFIGURATION</button>
+                        <a href="/dashboard"><button type="button" class="secondary">← BACK TO DASHBOARD</button></a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

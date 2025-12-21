@@ -1,85 +1,673 @@
-body {
-    background-color: #000000; /* Black background */
-    color: #00ff00; /* Lime green text */
-    font-family: 'Courier New', monospace; /* Retro monospace font */
-    margin: 0;
-    padding: 20px;
-    line-height: 1.6;
+/* ═══════════════════════════════════════════════════════════════
+   RETRO CRT TERMINAL STYLE - Replication Package Builder
+   ═══════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&family=Share+Tech+Mono&display=swap');
+
+:root {
+    --terminal-green: #33ff33;
+    --terminal-green-dim: #0a4a0a;
+    --terminal-green-glow: #00ff00;
+    --amber: #ffb000;
+    --amber-dim: #4a3500;
+    --cyan: #00ffff;
+    --magenta: #ff00ff;
+    --bg-dark: #0a0a0a;
+    --bg-darker: #050505;
+    --border-color: #33ff33;
+    --scanline-opacity: 0.03;
 }
 
-h1 {
-    color: #00ff00; /* Lime green headings */
+* {
+    box-sizing: border-box;
+}
+
+/* CRT Screen Effect */
+body {
+    background-color: var(--bg-dark);
+    color: var(--terminal-green);
+    font-family: 'VT323', 'Courier New', monospace;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Scanline overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* CRT flicker effect */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9998;
+    animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.27861; }
+    5% { opacity: 0.34769; }
+    10% { opacity: 0.23604; }
+    15% { opacity: 0.90626; }
+    20% { opacity: 0.18128; }
+    25% { opacity: 0.83891; }
+    30% { opacity: 0.65583; }
+    35% { opacity: 0.67807; }
+    40% { opacity: 0.26559; }
+    45% { opacity: 0.84693; }
+    50% { opacity: 0.96019; }
+    55% { opacity: 0.08594; }
+    60% { opacity: 0.20313; }
+    65% { opacity: 0.71988; }
+    70% { opacity: 0.53455; }
+    75% { opacity: 0.37288; }
+    80% { opacity: 0.71428; }
+    85% { opacity: 0.70419; }
+    90% { opacity: 0.7003; }
+    95% { opacity: 0.36108; }
+    100% { opacity: 0.24387; }
+}
+
+/* Main Container */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px;
+    position: relative;
+}
+
+/* Terminal Window Frame */
+.terminal-window {
+    background: linear-gradient(180deg, #1a1a2e 0%, #0a0a15 100%);
+    border: 3px solid var(--terminal-green);
+    border-radius: 10px;
+    box-shadow: 
+        0 0 20px rgba(51, 255, 51, 0.3),
+        inset 0 0 60px rgba(0, 0, 0, 0.5);
+    margin: 20px;
+    overflow: hidden;
+}
+
+/* Terminal Header Bar */
+.terminal-header {
+    background: linear-gradient(180deg, #2a2a3e 0%, #1a1a2e 100%);
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid var(--terminal-green);
+}
+
+.terminal-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.terminal-btn {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+}
+
+.terminal-btn.close { background: #ff5f56; box-shadow: 0 0 5px #ff5f56; }
+.terminal-btn.minimize { background: #ffbd2e; box-shadow: 0 0 5px #ffbd2e; }
+.terminal-btn.maximize { background: #27ca40; box-shadow: 0 0 5px #27ca40; }
+
+.terminal-title {
+    flex: 1;
     text-align: center;
-    border-bottom: 2px solid #00ff00;
-    padding-bottom: 10px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    color: var(--terminal-green);
+    text-shadow: 0 0 10px var(--terminal-green-glow);
+    letter-spacing: 2px;
+}
+
+.terminal-body {
+    padding: 25px 30px;
+}
+
+/* Typography */
+h1 {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 20px;
+    color: var(--terminal-green);
+    text-align: center;
+    text-shadow: 
+        0 0 10px var(--terminal-green-glow),
+        0 0 20px var(--terminal-green-glow),
+        0 0 30px var(--terminal-green-glow);
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px dashed var(--terminal-green-dim);
+    animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    from { text-shadow: 0 0 10px var(--terminal-green-glow), 0 0 20px var(--terminal-green-glow); }
+    to { text-shadow: 0 0 20px var(--terminal-green-glow), 0 0 30px var(--terminal-green-glow), 0 0 40px var(--terminal-green-glow); }
 }
 
 h2 {
-    color: #00ff00;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 14px;
+    color: var(--cyan);
+    text-shadow: 0 0 10px var(--cyan);
+    margin: 25px 0 15px 0;
+    padding-left: 15px;
+    border-left: 4px solid var(--cyan);
+}
+
+h3 {
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    color: var(--amber);
+    text-shadow: 0 0 8px var(--amber);
+    margin: 20px 0 10px 0;
 }
 
 p {
-    color: #00ff00;
+    color: var(--terminal-green);
+    margin: 10px 0;
+    text-shadow: 0 0 5px rgba(51, 255, 51, 0.5);
 }
 
+/* Command Prompt Style */
+.prompt::before {
+    content: "C:\\REPLICATION> ";
+    color: var(--amber);
+    text-shadow: 0 0 5px var(--amber);
+}
+
+/* Links */
+a {
+    color: var(--cyan);
+    text-decoration: none;
+    text-shadow: 0 0 5px var(--cyan);
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--magenta);
+    text-shadow: 0 0 15px var(--magenta);
+}
+
+/* Lists */
 ul {
     list-style-type: none;
     padding: 0;
+    margin: 15px 0;
 }
 
 li {
-    background-color: #111111; /* Dark gray for list items */
-    margin: 5px 0;
-    padding: 10px;
-    border: 1px solid #00ff00;
+    background: linear-gradient(90deg, rgba(51, 255, 51, 0.05) 0%, transparent 100%);
+    margin: 8px 0;
+    padding: 15px 20px;
+    border: 1px solid var(--terminal-green-dim);
+    border-left: 4px solid var(--terminal-green);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+li::before {
+    content: "►";
+    position: absolute;
+    left: -25px;
+    color: var(--terminal-green);
+    opacity: 0;
+    transition: all 0.3s ease;
 }
 
 li:hover {
-    background-color: #222222; /* Slightly lighter on hover */
+    background: linear-gradient(90deg, rgba(51, 255, 51, 0.15) 0%, rgba(51, 255, 51, 0.05) 100%);
+    border-color: var(--terminal-green);
+    transform: translateX(5px);
+    box-shadow: 0 0 15px rgba(51, 255, 51, 0.2);
 }
 
-input[type="checkbox"] {
-    accent-color: #00ff00;
-    margin-right: 10px;
+li:hover::before {
+    opacity: 1;
+    left: 8px;
 }
 
-button {
-    background-color: #000000;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 10px 20px;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #111111;
-}
-
+/* Form Elements */
 form {
     margin-top: 20px;
 }
 
 label {
+    display: flex;
+    align-items: center;
+    margin: 12px 0;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+label:hover {
+    background: rgba(51, 255, 51, 0.1);
+}
+
+/* Custom Checkbox */
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--terminal-green);
+    background: var(--bg-darker);
+    margin-right: 12px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background: var(--terminal-green);
+    box-shadow: 0 0 10px var(--terminal-green-glow);
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--bg-dark);
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input[type="checkbox"]:disabled {
+    border-color: #333;
+    opacity: 0.5;
+}
+
+/* Text Inputs */
+input[type="text"],
+input[type="file"],
+textarea {
+    background: var(--bg-darker);
+    border: 2px solid var(--terminal-green-dim);
+    color: var(--terminal-green);
+    font-family: 'VT323', monospace;
+    font-size: 18px;
+    padding: 12px 15px;
+    margin: 8px 0;
+    width: 100%;
+    max-width: 400px;
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 15px rgba(51, 255, 51, 0.3);
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+    max-width: 100%;
+}
+
+input[type="file"] {
+    cursor: pointer;
+}
+
+input[type="file"]::file-selector-button {
+    background: var(--terminal-green-dim);
+    color: var(--terminal-green);
+    border: 1px solid var(--terminal-green);
+    padding: 8px 15px;
+    font-family: 'VT323', monospace;
+    font-size: 16px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.3s ease;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background: var(--terminal-green);
+    color: var(--bg-dark);
+}
+
+/* Buttons */
+button {
+    background: linear-gradient(180deg, var(--terminal-green-dim) 0%, #052505 100%);
+    color: var(--terminal-green);
+    border: 2px solid var(--terminal-green);
+    padding: 12px 25px;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    margin: 5px;
+}
+
+button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(51, 255, 51, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+button:hover {
+    background: var(--terminal-green);
+    color: var(--bg-dark);
+    box-shadow: 
+        0 0 20px var(--terminal-green-glow),
+        inset 0 0 20px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+}
+
+button:hover::before {
+    left: 100%;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: #333;
+    color: #333;
+    background: var(--bg-darker);
+}
+
+button:disabled:hover {
+    background: var(--bg-darker);
+    color: #333;
+    box-shadow: none;
+}
+
+button:disabled::before {
+    display: none;
+}
+
+/* Primary Action Button */
+button.primary,
+button#runButton:not(:disabled) {
+    background: linear-gradient(180deg, #0a3a0a 0%, #052505 100%);
+    border-color: var(--terminal-green);
+    animation: buttonPulse 2s infinite;
+}
+
+@keyframes buttonPulse {
+    0%, 100% { box-shadow: 0 0 5px var(--terminal-green-glow); }
+    50% { box-shadow: 0 0 20px var(--terminal-green-glow), 0 0 30px var(--terminal-green-glow); }
+}
+
+/* Secondary/Amber Button */
+button.secondary {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: linear-gradient(180deg, var(--amber-dim) 0%, #1a1000 100%);
+}
+
+button.secondary:hover {
+    background: var(--amber);
+    color: var(--bg-dark);
+    box-shadow: 0 0 20px var(--amber);
+}
+
+/* Category Items */
+.category-item {
+    background: linear-gradient(180deg, rgba(51, 255, 51, 0.05) 0%, transparent 100%);
+    border: 1px solid var(--terminal-green-dim);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 15px 0;
+    position: relative;
+}
+
+.category-item label {
     display: block;
-    margin: 5px 0;
+    margin: 10px 0;
+    padding: 0;
 }
 
+.category-item input[type="text"],
+.category-item textarea {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Source Cards */
 .source {
-    margin-bottom: 20px;
+    background: linear-gradient(180deg, rgba(0, 255, 255, 0.05) 0%, transparent 100%);
+    border: 2px solid var(--terminal-green-dim);
+    border-radius: 10px;
+    margin: 25px 0;
+    padding: 20px 25px;
+    position: relative;
+    overflow: hidden;
 }
 
+.source::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--terminal-green), var(--cyan), var(--terminal-green));
+}
+
+.source h2 {
+    margin-top: 10px;
+}
+
+.source .count {
+    color: var(--amber);
+    font-size: 16px;
+    text-shadow: 0 0 5px var(--amber);
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid var(--terminal-green-dim);
+    border-radius: 5px;
+    margin: 15px 0;
+    filter: contrast(1.1);
+}
+
+img:hover {
+    border-color: var(--terminal-green);
+    box-shadow: 0 0 20px rgba(51, 255, 51, 0.3);
+}
+
+/* Loading Overlay */
+#loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 5, 5, 0.95);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#loading-overlay p {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 12px;
+    color: var(--terminal-green);
+    text-shadow: 0 0 20px var(--terminal-green-glow);
+    text-align: center;
+    line-height: 2;
+    animation: textGlow 1.5s ease-in-out infinite alternate;
+}
+
+/* Retro Spinner */
 .spinner {
-    border: 4px solid #111111;
-    border-top: 4px solid #00ff00;
+    width: 60px;
+    height: 60px;
+    border: 4px solid var(--terminal-green-dim);
+    border-top: 4px solid var(--terminal-green);
     border-radius: 50%;
-    width: 40px;
-    height: 40px;
     animation: spin 1s linear infinite;
-    margin: 20px auto;
+    margin: 30px auto;
+    box-shadow: 
+        0 0 20px var(--terminal-green-glow),
+        inset 0 0 20px rgba(51, 255, 51, 0.1);
 }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* ASCII Art Loading */
+.loading-ascii {
+    font-family: 'VT323', monospace;
+    font-size: 14px;
+    color: var(--terminal-green);
+    white-space: pre;
+    text-align: center;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0.5; }
+}
+
+/* Logo Styling */
+.logo {
+    display: block;
+    max-width: 200px;
+    margin: 0 auto 20px auto;
+    filter: drop-shadow(0 0 10px var(--terminal-green-glow)) brightness(1.2);
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    filter: drop-shadow(0 0 20px var(--terminal-green-glow)) brightness(1.4);
+    transform: scale(1.05);
+}
+
+/* Navigation Buttons Container */
+.nav-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+    justify-content: center;
+}
+
+/* Status Indicators */
+.status-available {
+    color: var(--terminal-green);
+}
+
+.status-unavailable {
+    color: #666;
+}
+
+.api-required {
+    color: var(--amber);
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-darker);
+    border: 1px solid var(--terminal-green-dim);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--terminal-green-dim);
+    border: 1px solid var(--terminal-green);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--terminal-green);
+}
+
+/* Selection */
+::selection {
+    background: var(--terminal-green);
+    color: var(--bg-dark);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .terminal-window {
+        margin: 10px;
+    }
+    
+    h1 {
+        font-size: 14px;
+    }
+    
+    h2 {
+        font-size: 11px;
+    }
+    
+    button {
+        font-size: 8px;
+        padding: 10px 15px;
+    }
+    
+    .terminal-title {
+        font-size: 8px;
+    }
+}
+
+/* Utility Classes */
+.text-center { text-align: center; }
+.text-amber { color: var(--amber); }
+.text-cyan { color: var(--cyan); }
+.text-magenta { color: var(--magenta); }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
+.glow { text-shadow: 0 0 10px currentColor; }

@@ -7,47 +7,129 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>{{ content }}</h1>
-    <img src="/static/atlas_research_logo.png" alt="Image">
-    <p>Welcome to the Replication Package Builder.</p>
-    <a href="/config" style="text-decoration: none;"><button>Configure API Keys</button></a>
-    <p>Select the data sources you want to use:</p>
-    <form action="/run" method="post" onsubmit="showLoading()">
-        <label><input type="checkbox" name="scopus" {% if not available_sources['scopus'] %}disabled{% endif %} onchange="checkSources()"> Scopus {% if not available_sources['scopus'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="ieee" {% if not available_sources['ieee'] %}disabled{% endif %} onchange="checkSources()"> IEEE Xplore {% if not available_sources['ieee'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="engineering_village" {% if not available_sources['engineering_village'] %}disabled{% endif %} onchange="checkSources()"> Engineering Village {% if not available_sources['engineering_village'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="science_direct" {% if not available_sources['science_direct'] %}disabled{% endif %} onchange="checkSources()"> Science Direct {% if not available_sources['science_direct'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="hal_open_science" {% if not available_sources['hal_open_science'] %}disabled{% endif %} onchange="checkSources()"> HAL Open Science {% if not available_sources['hal_open_science'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="acm_digital_library" {% if not available_sources['acm_digital_library'] %}disabled{% endif %} onchange="checkSources()"> ACM Digital Library {% if not available_sources['acm_digital_library'] %}(API Key Required){% endif %}</label>
-        <label><input type="checkbox" name="springer_nature" {% if not available_sources['springer_nature'] %}disabled{% endif %} onchange="checkSources()"> Springer Nature {% if not available_sources['springer_nature'] %}(API Key Required){% endif %}</label>
-        <br><br>
-        <p>Add custom categories and terms (comma-separated for terms):</p>
-        <div id="custom-categories">
-            <div class="category-item">
-                <label>Category 1: <input name="custom_category1" placeholder="e.g., Agile Keywords"></label><br>
-                <label>Terms 1: <textarea name="custom_terms1" placeholder="e.g., Agile, Scrum, Kanban"></textarea></label>
-                <button type="button" onclick="removeCategory(this)">Remove</button>
+    <div class="container">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="terminal-btn close"></span>
+                    <span class="terminal-btn minimize"></span>
+                    <span class="terminal-btn maximize"></span>
+                </div>
+                <div class="terminal-title">REPLICATION_PACKAGE.EXE</div>
+            </div>
+            <div class="terminal-body">
+                <h1>⬡ {{ content }} ⬡</h1>
+                
+                <div class="text-center">
+                    <img src="/static/atlas_research_logo.png" alt="Atlas Research Logo" class="logo">
+                </div>
+                
+                <p class="prompt">Welcome to the Replication Package Builder.</p>
+                <p class="text-amber">[ SYSTEM READY ] Initialize your literature search parameters below.</p>
+                
+                <div class="nav-buttons">
+                    <a href="/config"><button class="secondary">⚙ CONFIGURE API KEYS</button></a>
+                </div>
+                
+                <h2>► SELECT DATA SOURCES</h2>
+                
+                <form action="/run" method="post" onsubmit="showLoading()">
+                    <div class="source">
+                        <label>
+                            <input type="checkbox" name="scopus" {% if not available_sources['scopus'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['scopus'] %}status-available{% else %}status-unavailable{% endif %}">Scopus</span>
+                            {% if not available_sources['scopus'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="ieee" {% if not available_sources['ieee'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['ieee'] %}status-available{% else %}status-unavailable{% endif %}">IEEE Xplore</span>
+                            {% if not available_sources['ieee'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="engineering_village" {% if not available_sources['engineering_village'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['engineering_village'] %}status-available{% else %}status-unavailable{% endif %}">Engineering Village</span>
+                            {% if not available_sources['engineering_village'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="science_direct" {% if not available_sources['science_direct'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['science_direct'] %}status-available{% else %}status-unavailable{% endif %}">Science Direct</span>
+                            {% if not available_sources['science_direct'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="hal_open_science" {% if not available_sources['hal_open_science'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['hal_open_science'] %}status-available{% else %}status-unavailable{% endif %}">HAL Open Science</span>
+                            {% if not available_sources['hal_open_science'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="acm_digital_library" {% if not available_sources['acm_digital_library'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['acm_digital_library'] %}status-available{% else %}status-unavailable{% endif %}">ACM Digital Library</span>
+                            {% if not available_sources['acm_digital_library'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                        <label>
+                            <input type="checkbox" name="springer_nature" {% if not available_sources['springer_nature'] %}disabled{% endif %} onchange="checkSources()">
+                            <span class="{% if available_sources['springer_nature'] %}status-available{% else %}status-unavailable{% endif %}">Springer Nature</span>
+                            {% if not available_sources['springer_nature'] %}<span class="api-required">[API KEY REQUIRED]</span>{% endif %}
+                        </label>
+                    </div>
+                    
+                    <h2>► CUSTOM QUERY TERMS</h2>
+                    <p class="text-cyan">Add custom categories and terms (comma-separated for terms):</p>
+                    
+                    <div id="custom-categories">
+                        <div class="category-item">
+                            <label>Category 1: 
+                                <input type="text" name="custom_category1" placeholder="e.g., Agile Keywords">
+                            </label>
+                            <label>Terms 1: 
+                                <textarea name="custom_terms1" placeholder="e.g., Agile, Scrum, Kanban"></textarea>
+                            </label>
+                            <button type="button" onclick="removeCategory(this)" class="secondary">✕ REMOVE</button>
+                        </div>
+                    </div>
+                    
+                    <div class="nav-buttons" style="justify-content: flex-start;">
+                        <button type="button" onclick="addCategory()">+ ADD CATEGORY</button>
+                    </div>
+                    
+                    <h2>► IMPORT FROM FILE</h2>
+                    <p class="text-cyan">Or import terms from a CSV file (format: Category,Term):</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <input type="file" id="csvFile" accept=".csv">
+                        <button type="button" onclick="importCSV()" class="secondary">↑ IMPORT CSV</button>
+                    </div>
+                    
+                    <div class="nav-buttons mt-20">
+                        <button type="submit" id="runButton" disabled class="primary">▶ START REPLICATION PACKAGE BUILD</button>
+                    </div>
+                </form>
+                
+                {% if items %}
+                <h2>► ITEMS</h2>
+                <ul>
+                    {% for item in items %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>
-        <button type="button" onclick="addCategory()">Add Category</button>
-        <br><br>
-        <p>Or import terms from a CSV file (format: Category,Term):</p>
-        <input type="file" id="csvFile" accept=".csv">
-        <button type="button" onclick="importCSV()">Import CSV</button>
-        <br><br>
-        <button type="submit" id="runButton" disabled>Start Replication Package Build</button>
-    </form>
-    <div id="loading-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; text-align:center; padding-top:20%; color:#00ff00; font-family:'Courier New', monospace;">
-        <p>Running replication queries...<br>Please wait, this may take several minutes.</p>
-        <div class="spinner"></div>
     </div>
-    {% if items %}
-    <ul>
-        {% for item in items %}
-        <li>{{ item }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
+    
+    <div id="loading-overlay" style="display:none;">
+        <div class="loading-ascii">
+╔══════════════════════════════════════╗
+║     EXECUTING SEARCH QUERIES...      ║
+║                                      ║
+║   ████████████████░░░░░░░░  65%      ║
+║                                      ║
+║   Please wait, this may take         ║
+║   several minutes...                 ║
+╚══════════════════════════════════════╝
+        </div>
+        <div class="spinner"></div>
+        <p>Running replication queries...<br>Please wait, this may take several minutes.</p>
+    </div>
 </body>
 <script>
     let categoryCounter = 1;
@@ -58,9 +140,13 @@
         const div = document.createElement('div');
         div.className = 'category-item';
         div.innerHTML = `
-            <label>Category ${categoryCounter}: <input name="custom_category${categoryCounter}" placeholder="e.g., Agile Keywords"></label><br>
-            <label>Terms ${categoryCounter}: <textarea name="custom_terms${categoryCounter}" placeholder="e.g., Agile, Scrum, Kanban"></textarea></label>
-            <button type="button" onclick="removeCategory(this)">Remove</button>
+            <label>Category ${categoryCounter}: 
+                <input type="text" name="custom_category${categoryCounter}" placeholder="e.g., Agile Keywords">
+            </label>
+            <label>Terms ${categoryCounter}: 
+                <textarea name="custom_terms${categoryCounter}" placeholder="e.g., Agile, Scrum, Kanban"></textarea>
+            </label>
+            <button type="button" onclick="removeCategory(this)" class="secondary">✕ REMOVE</button>
         `;
         container.appendChild(div);
     }
@@ -70,7 +156,7 @@
     }
 
     function showLoading() {
-        document.getElementById('loading-overlay').style.display = 'block';
+        document.getElementById('loading-overlay').style.display = 'flex';
     }
 
     function checkSources() {
@@ -86,7 +172,7 @@
     function importCSV() {
         const file = document.getElementById('csvFile').files[0];
         if (!file) {
-            alert('Please select a CSV file first.');
+            alert('⚠ Please select a CSV file first.');
             return;
         }
         const reader = new FileReader();

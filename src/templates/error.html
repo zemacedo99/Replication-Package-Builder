@@ -7,8 +7,40 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Error {{ error_code }}</h1>
-    <p>{{ error_message }}</p>
-    <a href="/dashboard" style="text-decoration: none;"><button>Back to Dashboard</button></a>
+    <div class="container">
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <span class="terminal-btn close"></span>
+                    <span class="terminal-btn minimize"></span>
+                    <span class="terminal-btn maximize"></span>
+                </div>
+                <div class="terminal-title">ERROR.SYS</div>
+            </div>
+            <div class="terminal-body">
+                <h1>⚠ ERROR {{ error_code }} ⚠</h1>
+                
+                <div class="category-item" style="border-color: #ff5f56;">
+                    <pre class="loading-ascii" style="color: #ff5f56; animation: none;">
+╔═══════════════════════════════════════════════════════════╗
+║                                                           ║
+║   ███████╗██████╗ ██████╗  ██████╗ ██████╗                ║
+║   ██╔════╝██╔══██╗██╔══██╗██╔═══██╗██╔══██╗               ║
+║   █████╗  ██████╔╝██████╔╝██║   ██║██████╔╝               ║
+║   ██╔══╝  ██╔══██╗██╔══██╗██║   ██║██╔══██╗               ║
+║   ███████╗██║  ██║██║  ██║╚██████╔╝██║  ██║               ║
+║   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝               ║
+║                                                           ║
+╚═══════════════════════════════════════════════════════════╝
+                    </pre>
+                    <p class="text-amber text-center" style="font-size: 20px; margin-top: 20px;">{{ error_message }}</p>
+                </div>
+                
+                <div class="nav-buttons mt-20">
+                    <a href="/dashboard"><button class="primary">← RETURN TO DASHBOARD</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
