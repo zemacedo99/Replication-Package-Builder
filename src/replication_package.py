@@ -1,3 +1,10 @@
+import sys
+import os
+
+# Ensure cwd is in sys.path so a config.py next to the executable can be imported
+if os.getcwd() not in sys.path:
+    sys.path.insert(0, os.getcwd())
+
 from data.data_process import process_and_save_results
 from search.acm_digital_library_search import extract_acm_digital_library_information, search_acm_digital_library
 from search.scienceDirect_search import extract_science_direct_information, search_science_direct

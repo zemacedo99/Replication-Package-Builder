@@ -5,7 +5,7 @@ a = Analysis(
     ['src\\app.py'],
     pathex=['src'],
     binaries=[],
-    datas=[('src\\templates', 'templates'), ('src\\static', 'static'), ('src\\data_results', 'data_results'), ('src\\queries', 'queries'), ('src\\data', 'data'), ('src\\search', 'search')],
+    datas=[('src\\templates', 'templates'), ('src\\static', 'static'), ('src\\queries', 'queries'), ('src\\data', 'data'), ('src\\search', 'search')],
     hiddenimports=['flask', 'pandas', 'matplotlib', 'seaborn', 'wordcloud', 'PIL', 'fpdf', 'bibtexparser', 'requests'],
     hookspath=[],
     hooksconfig={},

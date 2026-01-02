@@ -1,8 +1,40 @@
 __pycache__/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local configuration (do NOT commit real API keys)
 config.py
-/data_results
-/src/data_results/
-myenv/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# PyInstaller
+dist/
+build/
+*.spec
+
+# PyInstaller onefile temp files
+__pycache__/
+*.manifest
+*.log
+
+# IDEs and editors
+.vscode/
+.idea/
+
+# Data/results
+data_results/
+src/data_results/
+generated_images/
+
+# Misc
 output.json
 *.pdf
 *.png
+build_run.log
+build_run.err

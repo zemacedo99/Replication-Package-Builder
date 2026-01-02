@@ -1,3 +1,11 @@
+import sys
+import os
+
+# Ensure the current working directory is first on sys.path so a config.py placed
+# next to the executable can be imported when running the PyInstaller bundle.
+if os.getcwd() not in sys.path:
+    sys.path.insert(0, os.getcwd())
+
 from flask import Flask, render_template, request, send_from_directory, redirect, send_file, make_response, session
 from replication_package import rep_package_start
 import pandas as pd
