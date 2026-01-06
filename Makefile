@@ -5,7 +5,7 @@ ECHO = echo
 FIND = find
 GREP = grep
 MKDIR = mkdir
-PYTHON = python
+PYTHON = python3.13
 RM = rm
 SED = sed
 
@@ -17,9 +17,6 @@ help: # Display this help
 clean: # Clean cache files
 	- $(FIND) . -type f -name "*.pyc" -delete
 	- $(FIND) . -type d -name "__pycache__" -delete
-
-pre-commit: # Run pre-commit hooks inside the virtual environment
-	. $(VENV_PATH)/bin/activate && pre-commit run --all-files
 
 run: # Run the application locally, inside the virtual environment
 	@$(MAKE) clean
