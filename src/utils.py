@@ -1,8 +1,14 @@
+"""Utility classes and functions."""
 import json
+import logging
+from argparse import ArgumentParser
+from typing import Any
+
+import matplotlib.pyplot as plt
 import pandas as pd
 from fpdf import FPDF
-# from wordcloud import WordCloud
-import matplotlib.pyplot as plt
+from pydantic import ValidationError, validate_call
+
 
 class PDF(FPDF):
     def __init__(self, title=""):
@@ -92,6 +98,27 @@ def data_to_pdf(df, column):
     # Save the PDF to a file
     pdf.output(f"{column}_counts.pdf")
     # print(f"PDF exported for {column}!")
+
+
+@validate_call
+def process_command_line_arguments() -> Any:
+    """Process and return the command line arguments."""
+    logging.info("process_command_line_arguments()")
+
+    argument_parser = ArgumentParser()
+
+    argument_parser.add_argument(
+        "--debug", dest="debug", action="store_true",
+        required=False, help="generate additional output if present"
+    )
+
+    argument_parser.add_argument(
+        "--ieee", dest="ieee", action="store_true",
+        required=False, help="search IEEE base if present"
+    )
+
+    return argument_parser.parse_args()
+
 
 def write_pretty_json_to_file(data, filename):
     with open(filename, 'w') as f:
