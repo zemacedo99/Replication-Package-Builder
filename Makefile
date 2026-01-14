@@ -41,9 +41,8 @@ run.web: # Run the web application locally, inside the virtual environment
 
 .ONESHELL:
 tests.unit: # Run the unit tests inside a Python virtual environment
-	@. $(VENV_PATH)/bin/activate
 	@$(MAKE) clean
-	$(PYTHON) -m pytest -vv --cov=. --cov-report html:./output/tests/reports/unit/coverage --html=./output/tests/reports/unit/report.html ./tests/unit/test_utils.py
+	@. $(VENV_PATH)/bin/activate && $(PYTHON) -m pytest -vv --cov=. --cov-report html:./output/tests/reports/unit/coverage --html=./output/tests/reports/unit/report.html ./tests/unit/test_utils.py
 
 venv.create: # Create the virtual environment and install dependencies
 	@$(MKDIR) -p $(VENV_PATH)
