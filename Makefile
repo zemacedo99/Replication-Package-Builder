@@ -29,6 +29,10 @@ pre-commit.run: # Manually run pre-commit hooks inside the virtual environment
 
 run.cli: # Run the CLI application locally, inside the virtual environment
 	@$(MAKE) clean
+	. $(VENV_PATH)/bin/activate && cd src && $(PYTHON) main.py --ieee
+
+run.cli.debug: # Run the CLI application locally in debug mode, inside the virtual environment
+	@$(MAKE) clean
 	. $(VENV_PATH)/bin/activate && cd src && $(PYTHON) main.py --debug --ieee
 
 run.web: # Run the web application locally, inside the virtual environment

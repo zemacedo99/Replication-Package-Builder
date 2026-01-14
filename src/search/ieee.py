@@ -1,7 +1,9 @@
 """IEEE knowledge base search"""
 import logging
-import requests
+from typing import List
 
+import requests
+from requests import HTTPError
 from pydantic import ValidationError, validate_call
 
 # FIXME
@@ -12,9 +14,14 @@ from pydantic import ValidationError, validate_call
 
 
 @validate_call
-def search(query, api_key, start_record=1, max_records=25) -> str | None:
-    """Process a search and return the results."""
-    logging.info("search()")
+def search(
+    query: str, api_key: str, start_record: int = 1, max_records: int = 25,
+    debug: bool = False
+) -> str | None:
+    """
+    Process a search and return the results.
+    """
+    logging.info("search() - Query: %s", query)
 
     base_url = "http://ieeexploreapi.ieee.org/api/v1/search/articles"
     headers = {
@@ -26,54 +33,62 @@ def search(query, api_key, start_record=1, max_records=25) -> str | None:
         "start_record": start_record,
         "max_records": max_records
     }
-    response = requests.get(
-        url=base_url, headers=headers, params=params, timeout=60
-    )
+
+    try:
+        response = requests.get(
+            url=base_url, headers=headers, params=params, timeout=60
+        )
+    except HTTPError as e:
+        logging.error("search() - %s", e)
+        return None
 
     if response.status_code == 200:
+        if debug:
+            logging.debug("search() - Results: %s", response.json())
+
         return response.json()
 
-    response.raise_for_status()
 
+@validate_call
+def extract_results_information(results: dict, debug: bool = False) -> List:
+    """
+    Extract and return the information from the search results.
+    """
+    results_information = []
 
-def extract_ieee_information(data):
-    """FIXME"""
-    extracted = []
-
-    for item in data['articles']:
-        title = item.get('title')
-        publication_year = item.get('publication_year')
-        publisher = item.get('publisher')
-        venue_type = item.get('content_type')
-        link = item.get('html_url')
+    for item in results["articles"]:
+        title = item.get("title")
+        publication_year = item.get("publication_year")
+        publisher = item.get("publisher")
+        venue_type = item.get("content_type")
+        link = item.get("html_url")
 
         # Adjusting extraction based on the observed data structure
-        authors_dict = item.get('authors', {})
-        authors_list = authors_dict.get('authors', [])
+        authors_dict = item.get("authors", {})
+        authors_list = authors_dict.get("authors", [])
 
         authors_names = [
-            author.get('full_name', '') for author in authors_list if isinstance(author, dict)  # noqa: E501 pylint: disable=C0301
+            author.get("full_name", "") for author in authors_list if isinstance(author, dict)  # noqa: E501 pylint: disable=C0301
         ]
 
-        extracted.append({
-            'Title': title,
-            'Publication Year': publication_year,
-            'Venue': publisher,
-            'Venue Type': venue_type,
-            'Authors': ', '.join(authors_names),
-            'Link': link
+        results_information.append({
+            "Title": title,
+            "Publication Year": publication_year,
+            "Venue": publisher,
+            "Venue Type": venue_type,
+            "Authors": ", ".join(authors_names),
+            "Link": link
         })
 
-    print(f"Fetched {len(extracted)} results from IEEE Xplore.")
-    return extracted
+    logging.info(
+        "extract_results_information() - Fetched %s results",
+        len(results_information)
+    )
 
+    if debug:
+        logging.debug(
+            "extract_results_information() - Results information: %s",
+            results_information
+        )
 
-# FIXME
-# if __name__ == "__main__":
-#     query = "Improving Documentation Agility in Safety-Critical Software Systems Development For Aerospace"
-        
-#     start_index = 0
-#     PAGE_SIZE = 25
-#     results = search_ieee(query, IEEE_API_KEY,  start_record=start_index + 1, max_records=PAGE_SIZE)
-
-#     print(results)
+    return results_information

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Main application."""
 import logging
 import sys
@@ -46,11 +45,16 @@ if __name__ == "__main__":
     if arguments.ieee:
         try:
             logging.info("main() - Search IEEE")
+
             results = ieee.search(
                 query=IEEE_QUERY, api_key=IEEE_API_KEY,
-                start_record=START_INDEX + 1, max_records=PAGE_SIZE
+                start_record=START_INDEX + 1, max_records=PAGE_SIZE,
+                debug=arguments.debug
             )  # IEEE uses 1-indexing
-            logging.info("main() - Results: %s", results)
+
+            results_information = ieee.extract_results_information(
+                results=results, debug=arguments.debug
+            )
         except (FileNotFoundError, ValidationError) as e:
             logging.error("main() - %s", e)
             logging.info(APPLICATION_FINISHED_MESSAGE)
