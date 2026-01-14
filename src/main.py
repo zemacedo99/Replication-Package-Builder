@@ -1,13 +1,17 @@
 """Main application."""
 import logging
+import os
 import sys
 
-import utils
-from models import application
+from dotenv import load_dotenv
 from pydantic import ValidationError
 
+import utils
+from data import process
+from models import application
 from search import ieee
 
+load_dotenv()
 logging.basicConfig(
     filename="./replication_package_builder.log",
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -17,12 +21,7 @@ logging.basicConfig(
 )
 
 
-# FIXME
 APPLICATION_FINISHED_MESSAGE = "main() - Application finished"
-IEEE_QUERY = '("Agile" OR "Agility" OR "Scrum" OR "Kanban" OR "Scrumban" OR "SafeScrum" OR "AgileSafe" OR "Agile Safe" OR "XP" OR "Extreme Programming" OR "Large-Scale Scrum" OR "LeSS" OR "Scrum@Scale" OR "SaS" OR "Disciplined Agile Delivery" OR "DAD") AND ("aerospace" OR "avionic" OR "avionics" OR "aviation" OR "aeronautic" OR "aeronautics" OR "aeronautical") AND ("Safety" OR "Safety-Critical" OR "Safety Critical" OR "Safety-Critical Systems" OR "Safety Critical Systems" OR "High Integrity" OR "High Integrity Systems" OR "HIS" OR "Safety Integrity" OR "Safety-Systems" OR "Safety Systems") AND ("ARP4761" OR "ARP 4761" OR "ARP4754" OR "ARP 4754" OR "ARP4754A" OR "ARP 4754A" OR "DO-178" OR "DO 178" OR "DO178" OR "DO-178C" OR "DO 178C" OR "DO178C" OR "DO-178B" OR "DO 178B" OR "DO178B" OR "DO 331" OR "DO331" OR "DO-331" OR "DO-297" OR "DO 297" OR "DO297") AND NOT "Manufactoring" AND NOT "manufactoring" AND NOT "Formal Methods" AND NOT "Formal methods" AND NOT "Batery" AND NOT "Bateries" AND NOT "Cells" AND NOT "Hydrogen" AND NOT "Computer Model" AND NOT "Simulation" AND NOT "Computer Simulation" AND NOT "Network" AND NOT "Neural" AND NOT "Graphical" AND NOT "Computer Graphics" AND NOT "Machine Learning" AND NOT "Electric" AND NOT "Automated Driving" AND NOT "Security" AND NOT "Health" AND NOT "MC/DC" AND NOT "Flight" AND NOT "Flight Control" AND NOT "Crew" AND NOT "Processor" AND NOT "Satellite" AND NOT "Power Converters" AND NOT "Engine" AND NOT "Turbine" AND NOT "Braking System" AND NOT "Carbon Emissions" AND NOT "Ambulance" AND NOT "Paramedics"'
-IEEE_API_KEY = ""
-PAGE_SIZE = 25
-START_INDEX = 0
 
 if __name__ == "__main__":
     logging.info("main() - Application started")
@@ -43,17 +42,27 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if arguments.ieee:
+        # TODO: Originally this is performed in a while loop
         try:
             logging.info("main() - Search IEEE")
 
+            final_results = []
+
             results = ieee.search(
-                query=IEEE_QUERY, api_key=IEEE_API_KEY,
-                start_record=START_INDEX + 1, max_records=PAGE_SIZE,
+                query=os.getenv("IEEE_QUERY"),
+                api_key=os.getenv("IEEE_API_KEY"),
+                start_record=1,
+                max_records=os.getenv("IEEE_PAGE_SIZE"),
                 debug=arguments.debug
             )  # IEEE uses 1-indexing
 
             results_information = ieee.extract_results_information(
                 results=results, debug=arguments.debug
+            )
+
+            process.process_and_save_results(
+                ieee_results=results_information, folder_name="../output",
+                debug=arguments.debug
             )
         except (FileNotFoundError, ValidationError) as e:
             logging.error("main() - %s", e)
