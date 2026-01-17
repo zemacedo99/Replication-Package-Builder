@@ -27,8 +27,10 @@ pre-commit.install: # Install pre-commit hooks inside the virtual environment
 pre-commit.run: # Manually run pre-commit hooks inside the virtual environment
 	. $(VENV_PATH)/bin/activate && pre-commit run --all-files
 
+ruff: # Run ruff formatter and linter
+	@$(ECHO) TODO.
+
 run.cli: # Run the CLI application locally, inside the virtual environment
-	@$(MAKE) clean
 	. $(VENV_PATH)/bin/activate && cd src && $(PYTHON) main.py --ieee
 
 run.cli.debug: # Run the CLI application locally in debug mode, inside the virtual environment
@@ -36,13 +38,12 @@ run.cli.debug: # Run the CLI application locally in debug mode, inside the virtu
 	. $(VENV_PATH)/bin/activate && cd src && $(PYTHON) main.py --debug --ieee
 
 run.web: # Run the web application locally, inside the virtual environment
-	@$(MAKE) clean
 	. $(VENV_PATH)/bin/activate && cd src && flask run
 
 .ONESHELL:
 tests.unit: # Run the unit tests inside a Python virtual environment
 	@$(MAKE) clean
-	@. $(VENV_PATH)/bin/activate && $(PYTHON) -m pytest -vv --cov=. --cov-report html:./output/tests/reports/unit/coverage --html=./output/tests/reports/unit/report.html ./tests/unit/test_utils.py
+	@. $(VENV_PATH)/bin/activate && $(PYTHON) -m pytest -vv --cov=. --cov-report html:./output/tests/reports/unit/coverage --html=./output/tests/reports/unit/report.html ./tests/unit
 
 venv.create: # Create the virtual environment and install dependencies
 	@$(MKDIR) -p $(VENV_PATH)

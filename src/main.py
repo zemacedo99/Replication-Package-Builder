@@ -13,7 +13,7 @@ from search import ieee
 
 load_dotenv()
 logging.basicConfig(
-    filename="./replication_package_builder.log",
+    filename="./output/replication_package_builder.log",
     format="%(asctime)s - %(levelname)s - %(message)s",
     encoding="utf-8",
     filemode="a",
@@ -61,7 +61,7 @@ if __name__ == "__main__":
             )
 
             process.process_and_save_results(
-                ieee_results=results_information, folder_name="../output",
+                ieee_results=results_information, folder_name="output",
                 debug=arguments.debug
             )
         except (FileNotFoundError, ValidationError) as e:
